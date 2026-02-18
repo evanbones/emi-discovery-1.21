@@ -47,6 +47,10 @@ sourceSets.main.resources.srcDir 'src/generated/resources'
 
 repositories {
     maven { url "https://maven.shedaniel.me/" }
+    maven {
+        name = "TerraformersMC"
+        url = "https://maven.terraformersmc.com/"
+    }
 }
 
 dependencies {
@@ -54,6 +58,9 @@ dependencies {
     implementation 'org.jetbrains:annotations:25.0.0'
     annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
     modApi("me.shedaniel.cloth:cloth-config-forge:${cloth_config_version}")
+    implementation(jarJar("io.github.llamalad7:mixinextras-forge:0.5.3"))
+    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.5.3"))
+    implementation "dev.emi:emi-forge:${emi_version}"
 }
 
 jar {

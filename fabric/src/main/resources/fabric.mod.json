@@ -1,6 +1,6 @@
 {
     "schemaVersion": 1,
-    "id": "examplemod",
+    "id": "emi_discovery",
     "version": "${version}",
     "name": "${mod_name}",
     "description": "${description}",
@@ -15,7 +15,7 @@
     "environment": "*",
     "entrypoints": {
         "main": [
-            "net.funkpla.examplemod.ExampleMod"
+            "net.funkpla.emi_discovery.ExampleMod"
         ]
     },
     "mixins": [

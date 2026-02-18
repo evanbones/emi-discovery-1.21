@@ -16,15 +16,26 @@ legacyForge {
 
 repositories {
     maven { url "https://maven.shedaniel.me/" }
+    maven {
+        name = "TerraformersMC"
+        url = "https://maven.terraformersmc.com/"
+    }
 }
 
 dependencies {
     compileOnly group: 'org.spongepowered', name: 'mixin', version: '0.8.5'
     implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
     implementation 'org.jetbrains:annotations:25.0.0'
+    implementation(jarJar("io.github.llamalad7:mixinextras-forge:0.5.3"))
+    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.5.3"))
     modApi("me.shedaniel.cloth:cloth-config-forge:${cloth_config_version}") {
         exclude(group: "net.fabricmc.fabric-api")
     }
+    compileOnly ("dev.emi:emi-forge:${emi_version}:api")
+    compileOnly ("dev.emi:emi-forge:${emi_version}"){
+        exclude(group: "net.minecraftforge.fml")
+    }
+
 }
 
 configurations {
