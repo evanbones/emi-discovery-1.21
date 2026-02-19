@@ -5,6 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import com.mojang.authlib.GameProfile;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -14,6 +15,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.HashSet;
 import java.util.Set;
+import net.funkpla.emi_discovery.mixin.MinecraftServerStorageSourceAccessor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.server.IntegratedServer;
@@ -25,8 +27,9 @@ import org.apache.commons.io.IOUtils;
 
 public class KnownItems {
   private static final Set<Item> knownItems = new HashSet<>();
-  private static final File PRE_DISCOVERED = new File("config/dei_pre_discovered.json");
+  private static final File PRE_DISCOVERED = new File("config","emi_discovery_pre_discovered.json");
   private static final Gson gson = new Gson();
+  private static final Path ROOT_DIR = Path.of("moddata", "emi_discovery");
 
   public static void clear() {
     knownItems.clear();
@@ -45,15 +48,16 @@ public class KnownItems {
   public static void loadFromDisk() {
     clear();
 
-    new File("dei/").mkdirs(); // make sure the folder exists
+    if (!ROOT_DIR.toFile().exists() && !ROOT_DIR.toFile().mkdirs()) {
+      throw new RuntimeException("Could not create data directory.");
+    }
 
-    Path discoveredPath = Path.of("dei", getWorldName().replace('/', '_') + ".json");
-    File worldDiscovered = discoveredPath.toFile();
+    File worldDiscovered = getKnownItemsFile();
 
     if (!worldDiscovered.exists() && PRE_DISCOVERED.exists()) { // add pre discovered entries
       try {
-        Path path = worldDiscovered.toPath();
-        Files.copy(PRE_DISCOVERED.toPath(), path, StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(
+            PRE_DISCOVERED.toPath(), worldDiscovered.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
       } catch (Exception e) {
         throw new RuntimeException(e);
@@ -110,17 +114,22 @@ public class KnownItems {
     return array;
   }
 
+  public static Path getKnownItemsPath() {
+    return ROOT_DIR.resolve(getWorldName().replace('/', '_') + ".json");
+  }
+
+  public static File getKnownItemsFile() {
+    return getKnownItemsPath().toFile();
+  }
+
   public static void saveToDisk() {
-    Path discoveredPath = Path.of("dei", getWorldName().replace('/', '_') + ".json");
-    File worldDiscovered = discoveredPath.toFile();
     JsonWriter writer = null;
     try {
-      writer = gson.newJsonWriter(new FileWriter(worldDiscovered));
+      writer = gson.newJsonWriter(new FileWriter(getKnownItemsFile()));
       writer.setIndent("    ");
       gson.toJson(discoveredToJson(), writer);
     } catch (Exception e) {
       Constants.LOG.error("Couldn't save discovered");
-      e.printStackTrace();
       throw new RuntimeException(e);
     } finally {
       IOUtils.closeQuietly(writer);
@@ -128,13 +137,16 @@ public class KnownItems {
   }
 
   public static String getWorldName() {
-    Minecraft minecraft = Minecraft.getInstance();
-    ServerData serverData = minecraft.getCurrentServer();
-    if (serverData != null) {
-      return serverData.name;
+    Minecraft client = Minecraft.getInstance();
+    if (client.isLocalServer() && client.getSingleplayerServer() != null) {
+      IntegratedServer server = client.getSingleplayerServer();
+      GameProfile profile = server.getSingleplayerProfile();
+      String levelId =
+          ((MinecraftServerStorageSourceAccessor) server).getStorageSource().getLevelId();
+      return profile != null ? profile.getName() + " - " + levelId : levelId;
     } else {
-      IntegratedServer integratedServer = minecraft.getSingleplayerServer();
-      return integratedServer.getMotd();
+      ServerData serverdata = client.getCurrentServer();
+      return serverdata != null ? serverdata.name : "unknown";
     }
   }
 }
