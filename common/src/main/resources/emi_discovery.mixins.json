@@ -5,12 +5,14 @@
     "refmap": "${mod_id}.refmap.json",
     "compatibilityLevel": "JAVA_17",
     "mixins": [
+        "EMIxxStackManagerAccessor",
+        "MinecraftServerStorageSourceAccessor"
     ],
     "client": [
         "EmiScreenManagerMixin",
         "EmiSidebarsMixin",
-        "EmiTagRecipeMixin",
-        "GuiGraphicsAccessor"
+        "EMIxxStackManagerMixin",
+        "TagTooltipComponentMixin"
     ],
     "server": [
     ],

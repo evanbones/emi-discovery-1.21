@@ -1,7 +1,5 @@
 package net.funkpla.emi_discovery.network.client;
 
-import dev.emi.emi.config.EmiConfig;
-import dev.emi.emi.config.SidebarType;
 import dev.emi.emi.screen.EmiScreenManager;
 import net.funkpla.emi_discovery.KnownItems;
 import net.minecraft.network.FriendlyByteBuf;

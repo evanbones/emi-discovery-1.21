@@ -13,15 +13,14 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(EmiScreenManager.class)
 public class EmiScreenManagerMixin {
   @WrapOperation(
+      remap = false,
       method =
           "stackInteraction(Ldev/emi/emi/api/stack/EmiStackInteraction;Ljava/util/function/Function;)Z",
       at =
           @At(
               value = "INVOKE",
               target =
-                  "Ldev/emi/emi/api/EmiApi;displayUses(Ldev/emi/emi/api/stack/EmiIngredient;)V"),
-          remap = false
-  )
+                  "Ldev/emi/emi/api/EmiApi;displayUses(Ldev/emi/emi/api/stack/EmiIngredient;)V"))
   private static void stopUsages(EmiIngredient fav, Operation<Void> original) {
     List<EmiStack> stacks = fav.getEmiStacks();
     if (!(stacks.size() == 1 && !KnownItems.isKnown(stacks.get(0).getItemStack()))) {
@@ -30,14 +29,14 @@ public class EmiScreenManagerMixin {
   }
 
   @WrapOperation(
+      remap = false,
       method =
           "stackInteraction(Ldev/emi/emi/api/stack/EmiStackInteraction;Ljava/util/function/Function;)Z",
       at =
           @At(
               value = "INVOKE",
               target =
-                  "Ldev/emi/emi/api/EmiApi;displayRecipes(Ldev/emi/emi/api/stack/EmiIngredient;)V"),
-      remap = false)
+                  "Ldev/emi/emi/api/EmiApi;displayRecipes(Ldev/emi/emi/api/stack/EmiIngredient;)V"))
   private static void stopRecipes(EmiIngredient fav, Operation<Void> original) {
     List<EmiStack> stacks = fav.getEmiStacks();
     if (!(stacks.size() == 1 && !KnownItems.isKnown(stacks.get(0).getItemStack()))) {

@@ -5,10 +5,12 @@
     "refmap": "${mod_id}.refmap.json",
     "compatibilityLevel": "JAVA_17",
     "mixins": [
-        "InventoryChangeTriggerMixinFabric"
+        "InventoryChangeTriggerMixinFabric",
+        "EMIxxStackManagerMixin"
     ],
     "client": [
-        "ClientPacketListenerMixinFabric"
+        "ClientPacketListenerMixinFabric",
+        "MinecraftMixinFabric"
     ],
     "server": [
     ],

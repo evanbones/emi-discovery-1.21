@@ -15,7 +15,7 @@
     "environment": "*",
     "entrypoints": {
         "main": [
-            "net.funkpla.emi_discovery.ExampleMod"
+            "net.funkpla.emi_discovery.EmiDiscoveryFabric"
         ]
     },
     "mixins": [
