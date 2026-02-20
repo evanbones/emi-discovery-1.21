@@ -1,4 +1,4 @@
-package net.funkpla.emi_discovery.mixin;
+package net.funkpla.emi_discovery.mixin.emi.accessor;
 
 import java.util.List;
 import net.minecraft.client.gui.Font;
