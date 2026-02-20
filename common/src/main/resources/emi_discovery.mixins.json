@@ -14,9 +14,7 @@
         "emi.PageSlotWidgetMixin",
         "emi.RecipeScreenMixin",
         "emi.TagTooltipComponentMixin",
-        "emi.accessor.EmiSlotWidgetAccessor",
         "emi.accessor.EmiTagRecipeAccessor",
-        "emi.accessor.PageSlotWidgetAccessor",
         "emixx.EMIxxStackManagerAccessor",
         "emixx.EMIxxStackManagerMixin"
     ],

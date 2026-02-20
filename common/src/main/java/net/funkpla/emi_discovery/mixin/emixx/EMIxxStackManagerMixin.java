@@ -14,31 +14,37 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(StackManager.class)
 public class EMIxxStackManagerMixin {
 
+  /**
+   * Get the internal list of displayed stacks from the StackManager and filter out stacks with no
+   * known items.
+   *
+   * @return the filtered list
+   */
   @Unique
   private List<EmiStack> getFilteredStacks() {
     return ((EMIxxStackManagerAccessor) this)
         .getInternalDisplayedStacks().stream()
             .filter(
                 emiStack -> {
-                  if (emiStack instanceof EmiGroupStack groupStack) {
-                    if (groupStack.getItems().stream()
-                        .filter(item -> KnownItems.isKnown(item.getRealStack()))
-                        .toList()
-                        .isEmpty()) {
-                      return false;
-                    }
-                  }
+                  if (emiStack instanceof EmiGroupStack groupStack)
+                    return groupStack.getItems().stream()
+                        .anyMatch(item -> KnownItems.isKnown(item.getRealStack()));
                   return KnownItems.isKnown(emiStack);
                 })
             .toList();
   }
 
+  /**
+   * Replace the return value of StackManager.displayedStacks with a list filtered for known items.
+   *
+   * @param returnable to set the return value
+   */
   @Inject(
       remap = false,
       method = "getDisplayedStacks$emixx_common",
       at = @At("HEAD"),
       cancellable = true)
-  private void filterStacks(CallbackInfoReturnable<List<EmiStack>> cir) {
-    cir.setReturnValue(getFilteredStacks());
+  private void filterStacks(CallbackInfoReturnable<List<EmiStack>> returnable) {
+    returnable.setReturnValue(getFilteredStacks());
   }
 }

@@ -10,6 +10,12 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(EmiScreenManager.class)
 public class EmiScreenManagerMixin {
+  /**
+   * Stop usage lookups for unknown ingredients.
+   *
+   * @param fav the ingredient being requested
+   * @param original original operation, called if the ingredient is known
+   */
   @WrapOperation(
       remap = false,
       method =
@@ -23,6 +29,12 @@ public class EmiScreenManagerMixin {
     if (KnownItems.isKnown(fav)) original.call(fav);
   }
 
+  /**
+   * Stop recipe lookups for unknown ingredients.
+   *
+   * @param fav the ingredient being requested
+   * @param original original operation, called if the ingredient is known
+   */
   @WrapOperation(
       remap = false,
       method =

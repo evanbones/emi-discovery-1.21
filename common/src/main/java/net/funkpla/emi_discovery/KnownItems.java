@@ -36,8 +36,8 @@ public class KnownItems {
   private static final Set<Item> knownItems = new HashSet<>();
   private static final File PRE_DISCOVERED =
       new File("config", "emi_discovery_pre_discovered.json");
+  private static final Path DATA_DIR = Path.of("moddata", "emi_discovery");
   private static final Gson gson = new Gson();
-  private static final Path ROOT_DIR = Path.of("moddata", "emi_discovery");
 
   public static void clear() {
     knownItems.clear();
@@ -80,7 +80,7 @@ public class KnownItems {
   public static void loadFromDisk() {
     clear();
 
-    if (!ROOT_DIR.toFile().exists() && !ROOT_DIR.toFile().mkdirs()) {
+    if (!DATA_DIR.toFile().exists() && !DATA_DIR.toFile().mkdirs()) {
       throw new RuntimeException("Could not create data directory.");
     }
 
@@ -147,7 +147,7 @@ public class KnownItems {
   }
 
   public static Path getKnownItemsPath() {
-    return ROOT_DIR.resolve(getWorldName().replace('/', '_') + ".json");
+    return DATA_DIR.resolve(getWorldName().replace('/', '_') + ".json");
   }
 
   public static File getKnownItemsFile() {

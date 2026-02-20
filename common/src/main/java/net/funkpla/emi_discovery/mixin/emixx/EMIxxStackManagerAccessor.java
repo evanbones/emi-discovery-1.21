@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(StackManager.class)
 public interface EMIxxStackManagerAccessor {
+  /** Allow access to the private internal value of displayedStacks. Bah, Kotlin! */
   @Accessor(value = "displayedStacks", remap = false)
   List<EmiStack> getInternalDisplayedStacks();
 }

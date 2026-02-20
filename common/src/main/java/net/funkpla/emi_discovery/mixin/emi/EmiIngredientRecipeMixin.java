@@ -16,6 +16,14 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(EmiIngredientRecipe.class)
 public class EmiIngredientRecipeMixin {
+  /**
+   * Filter unknown items from the stacks returned by getStacks() if the recipe is a TagRecipe. If
+   * the resulting list is empty, return a list with one empty ingredient to prevent an exception.
+   *
+   * @param ingredientRecipe the recipe to filter
+   * @param original original operation, called for non-TagRecipes
+   * @return ingredient list with unknown items removed, or a list of one empty ingredient
+   */
   @SuppressWarnings("UnstableApiUsage")
   @WrapOperation(
       remap = false,
@@ -25,14 +33,15 @@ public class EmiIngredientRecipeMixin {
               target = "Ldev/emi/emi/api/recipe/EmiIngredientRecipe;getStacks()Ljava/util/List;",
               value = "INVOKE"))
   private List<EmiIngredient> filterInputs(
-      EmiIngredientRecipe instance, Operation<List<EmiIngredient>> original) {
-    if (instance instanceof EmiTagRecipe tagRecipe) {
+      EmiIngredientRecipe ingredientRecipe, Operation<List<EmiIngredient>> original) {
+    if (ingredientRecipe instanceof EmiTagRecipe tagRecipe) {
+
       List<EmiIngredient> emiIngredients = new ArrayList<>();
       emiIngredients.add(new ListEmiIngredient(((EmiTagRecipeAccessor) tagRecipe).getStacks(), 1L));
-      List<EmiIngredient> filtered =
-              emiIngredients.stream().filter(KnownItems::isKnown).toList();
+      List<EmiIngredient> filtered = emiIngredients.stream().filter(KnownItems::isKnown).toList();
+
       return filtered.isEmpty() ? List.of(EmiIngredient.of(Ingredient.EMPTY)) : filtered;
     }
-    return original.call(instance);
+    return original.call(ingredientRecipe);
   }
 }

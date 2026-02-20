@@ -7,6 +7,9 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(MinecraftServer.class)
 public interface MinecraftServerStorageSourceAccessor {
-    @Accessor(value="storageSource")
-    LevelStorageSource.LevelStorageAccess getStorageSource();
+  /**
+   * Allow access to the private storageSource so we can get the unique path to the save directory.
+   */
+  @Accessor(value = "storageSource")
+  LevelStorageSource.LevelStorageAccess getStorageSource();
 }

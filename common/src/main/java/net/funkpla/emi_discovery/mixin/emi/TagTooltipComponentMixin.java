@@ -12,6 +12,16 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(TagTooltipComponent.class)
 public class TagTooltipComponentMixin {
 
+  /**
+   * Draw a translucent black square instead of an icon for unknown items in the tag recipe tooltip.
+   *
+   * @param drawContext the wrapped GuiGraphics instance
+   * @param stack the stack to draw
+   * @param x duh
+   * @param y double duh
+   * @param flags flags for the original call
+   * @param original original operation, called if the item is known
+   */
   @WrapOperation(
       remap = false,
       method =
@@ -23,14 +33,14 @@ public class TagTooltipComponentMixin {
                   "Ldev/emi/emi/runtime/EmiDrawContext;drawStack"
                       + "(Ldev/emi/emi/api/stack/EmiIngredient;III)V"))
   private void pruneTagTooltip(
-      EmiDrawContext instance,
+      EmiDrawContext drawContext,
       EmiIngredient stack,
       int x,
       int y,
       int flags,
       Operation<Void> original) {
-    if (!KnownItems.isKnown(stack)) instance.fill(x, y, 16, 16, 0x0FFFFFFF);
-    else original.call(instance, stack, x, y, flags);
+    if (KnownItems.isKnown(stack)) original.call(drawContext, stack, x, y, flags);
+    else drawContext.fill(x, y, 16, 16, 0x0FFFFFFF);
   }
 
   /*

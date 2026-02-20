@@ -13,6 +13,12 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(EmiSidebars.class)
 public class EmiSidebarsMixin {
+  /**
+   * Slide in to getStacks to filter out unknown items from the index.
+   *
+   * @param operation original operation (unused)
+   * @return a filtered list of stacks
+   */
   @WrapOperation(
       remap = false,
       method = "getStacks",
@@ -22,8 +28,6 @@ public class EmiSidebarsMixin {
               opcode = Opcodes.GETSTATIC,
               target = "Ldev/emi/emi/registry/EmiStackList;filteredStacks:Ljava/util/List;"))
   private static List<EmiStack> filterFiltered(Operation<List<EmiStack>> operation) {
-    return EmiStackList.filteredStacks.stream()
-        .filter(KnownItems::isKnown)
-        .toList();
+    return EmiStackList.filteredStacks.stream().filter(KnownItems::isKnown).toList();
   }
 }
