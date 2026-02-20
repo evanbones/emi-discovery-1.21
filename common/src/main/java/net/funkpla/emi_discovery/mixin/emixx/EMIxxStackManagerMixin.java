@@ -1,4 +1,4 @@
-package net.funkpla.emi_discovery.mixin;
+package net.funkpla.emi_discovery.mixin.emixx;
 
 import concerrox.emixx.content.StackManager;
 import concerrox.emixx.content.stackgroup.EmiGroupStack;
@@ -19,16 +19,16 @@ public class EMIxxStackManagerMixin {
     return ((EMIxxStackManagerAccessor) this)
         .getInternalDisplayedStacks().stream()
             .filter(
-                stack -> {
-                  if (stack instanceof EmiGroupStack groupStack) {
+                emiStack -> {
+                  if (emiStack instanceof EmiGroupStack groupStack) {
                     if (groupStack.getItems().stream()
-                        .filter(item -> KnownItems.isKnown(item.getRealStack().getItemStack()))
+                        .filter(item -> KnownItems.isKnown(item.getRealStack()))
                         .toList()
                         .isEmpty()) {
                       return false;
                     }
                   }
-                  return KnownItems.isKnown(stack.getItemStack());
+                  return KnownItems.isKnown(emiStack);
                 })
             .toList();
   }

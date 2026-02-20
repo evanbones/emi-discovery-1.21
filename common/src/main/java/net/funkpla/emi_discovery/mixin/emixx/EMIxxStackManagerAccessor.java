@@ -1,4 +1,4 @@
-package net.funkpla.emi_discovery.mixin;
+package net.funkpla.emi_discovery.mixin.emixx;
 
 import concerrox.emixx.content.StackManager;
 import dev.emi.emi.api.stack.EmiStack;
