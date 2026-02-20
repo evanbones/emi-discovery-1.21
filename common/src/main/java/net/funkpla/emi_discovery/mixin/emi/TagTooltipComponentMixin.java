@@ -29,12 +29,8 @@ public class TagTooltipComponentMixin {
       int y,
       int flags,
       Operation<Void> original) {
-    if ((stack.getEmiStacks().size() == 1
-        && !KnownItems.isKnown(stack.getEmiStacks().get(0).getItemStack()))) {
-      instance.fill(x, y, 16, 16, 0x0FFFFFFF);
-    } else {
-      original.call(instance, stack, x, y, flags);
-    }
+    if (!KnownItems.isKnown(stack)) instance.fill(x, y, 16, 16, 0x0FFFFFFF);
+    else original.call(instance, stack, x, y, flags);
   }
 
   /*

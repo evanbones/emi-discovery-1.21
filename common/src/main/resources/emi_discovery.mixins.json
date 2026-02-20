@@ -7,7 +7,6 @@
     "mixins": [
         "emixx.EMIxxStackManagerAccessor",
         "MinecraftServerStorageSourceAccessor",
-        ,
         "emi.accessor.PageSlotWidgetAccessor"
     ],
     "client": [

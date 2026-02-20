@@ -6,6 +6,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.mojang.authlib.GameProfile;
+import dev.emi.emi.api.stack.EmiIngredient;
+import dev.emi.emi.api.stack.EmiStack;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -27,7 +29,8 @@ import org.apache.commons.io.IOUtils;
 
 public class KnownItems {
   private static final Set<Item> knownItems = new HashSet<>();
-  private static final File PRE_DISCOVERED = new File("config","emi_discovery_pre_discovered.json");
+  private static final File PRE_DISCOVERED =
+      new File("config", "emi_discovery_pre_discovered.json");
   private static final Gson gson = new Gson();
   private static final Path ROOT_DIR = Path.of("moddata", "emi_discovery");
 
@@ -37,6 +40,14 @@ public class KnownItems {
 
   public static boolean isKnown(ItemStack stack) {
     return knownItems.contains(stack.getItem());
+  }
+
+  public static boolean isKnown(EmiStack stack) {
+    return isKnown(stack.getItemStack());
+  }
+
+  public static boolean isKnown(EmiIngredient ingredient) {
+    return (ingredient.getEmiStacks().size() == 1 || isKnown(ingredient.getEmiStacks().get(0)));
   }
 
   public static void addKnown(ItemStack stack) {

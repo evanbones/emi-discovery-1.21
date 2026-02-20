@@ -23,7 +23,7 @@ public class EmiSidebarsMixin {
               target = "Ldev/emi/emi/registry/EmiStackList;filteredStacks:Ljava/util/List;"))
   private static List<EmiStack> filterFiltered(Operation<List<EmiStack>> operation) {
     return EmiStackList.filteredStacks.stream()
-        .filter(stack -> KnownItems.isKnown(stack.getItemStack()))
+        .filter(KnownItems::isKnown)
         .toList();
   }
 }

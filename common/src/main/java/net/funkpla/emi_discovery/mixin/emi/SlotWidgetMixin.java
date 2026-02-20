@@ -16,10 +16,6 @@ public class SlotWidgetMixin {
   private void maybeDrawStack(
       GuiGraphics draw, int mouseX, int mouseY, float delta, CallbackInfo ci) {
     var stack = ((EmiSlotWidgetAccessor) this).getIngredientStack();
-
-    if (stack.getEmiStacks().size() == 1
-        && !KnownItems.isKnown(stack.getEmiStacks().get(0).getItemStack())) {
-      ci.cancel();
-    }
+    if (!KnownItems.isKnown(stack)) ci.cancel();
   }
 }

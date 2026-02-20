@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(RecipeScreen.class)
 public class RecipeScreenMixin {
-    /*
+  /*
   @WrapOperation(
       remap = false,
       method = "init",
@@ -48,14 +48,6 @@ public class RecipeScreenMixin {
       @Local(name = "tab") RecipeTab tab) {
 
     List<EmiIngredient> workstations = EmiApi.getRecipeManager().getWorkstations(tab.category);
-    return workstations.stream()
-        .filter(
-            emiIngredient -> {
-              if (emiIngredient.getEmiStacks().size() == 1) {
-                return KnownItems.isKnown(emiIngredient.getEmiStacks().get(0).getItemStack());
-              }
-              return false;
-            })
-        .toList();
+    return workstations.stream().filter(KnownItems::isKnown).toList();
   }
 }
