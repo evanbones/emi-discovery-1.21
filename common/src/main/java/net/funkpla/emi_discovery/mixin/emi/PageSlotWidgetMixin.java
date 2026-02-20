@@ -15,15 +15,13 @@ public abstract class PageSlotWidgetMixin {
 
   @WrapOperation(
       method = "render",
-      at =
-          @At(
-              value = "INVOKE",
-              target = "Ldev/emi/emi/api/stack/EmiIngredient;isEmpty()" + "Z",
-              remap = false))
+      at = @At(value = "INVOKE", target = "Ldev/emi/emi/api/stack/EmiIngredient;isEmpty()Z"),
+      remap = false)
   private boolean filterPageSlots(EmiIngredient instance, Operation<Boolean> original) {
     var ingredient = ((PageSlotWidgetAccessor) this).emi_discovery$getIngredientStack();
     var recipe = ((PageSlotWidgetAccessor) this).emi_discovery$getRecipe();
     if (recipe instanceof EmiTagRecipe) Constants.LOG.info("Poo");
+    // If the ingredient isn't known, we pretend it's empty.
     return !KnownItems.isKnown(ingredient);
   }
 }

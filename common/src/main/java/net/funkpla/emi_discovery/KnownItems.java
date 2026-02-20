@@ -6,6 +6,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.mojang.authlib.GameProfile;
+import dev.emi.emi.api.recipe.EmiRecipe;
+import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import java.io.File;
@@ -16,7 +18,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import net.funkpla.emi_discovery.mixin.MinecraftServerStorageSourceAccessor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerData;
@@ -47,7 +52,23 @@ public class KnownItems {
   }
 
   public static boolean isKnown(EmiIngredient ingredient) {
-    return (ingredient.getEmiStacks().size() == 1 || isKnown(ingredient.getEmiStacks().get(0)));
+    return ingredient.getEmiStacks().stream().anyMatch(KnownItems::isKnown);
+  }
+
+  public static Set<Map.Entry<EmiRecipeCategory, List<EmiRecipe>>> filterRecipes(
+      Map<EmiRecipeCategory, List<EmiRecipe>> categoryListMap) {
+
+    return categoryListMap.entrySet().stream()
+        .collect(
+            Collectors.toMap(
+                Map.Entry::getKey,
+                entry ->
+                    entry.getValue().stream()
+                        .filter(
+                            emiRecipe ->
+                                emiRecipe.getInputs().stream().allMatch(KnownItems::isKnown))
+                        .toList()))
+        .entrySet();
   }
 
   public static void addKnown(ItemStack stack) {
