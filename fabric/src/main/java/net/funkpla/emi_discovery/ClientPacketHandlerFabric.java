@@ -11,20 +11,28 @@ import net.minecraft.network.FriendlyByteBuf;
 
 public class ClientPacketHandlerFabric {
 
-    public static <MSG extends S2CModPacket> void register(Class<MSG> packetLocation, Function<FriendlyByteBuf, MSG> reader) {
-        ClientPlayNetworking.registerGlobalReceiver(PacketHandler.packet(packetLocation), wrapS2C(reader));
-    }
+  public static <MSG extends S2CModPacket> void register(
+      Class<MSG> packetLocation, Function<FriendlyByteBuf, MSG> reader) {
+    ClientPlayNetworking.registerGlobalReceiver(
+        PacketHandler.packet(packetLocation), wrapS2C(reader));
+  }
 
-    public static <MSG extends S2CModPacket> ClientPlayNetworking.PlayChannelHandler wrapS2C(Function<FriendlyByteBuf,MSG> decodeFunction) {
-        return new ClientHandler<>(decodeFunction);
-    }
+  public static <MSG extends S2CModPacket> ClientPlayNetworking.PlayChannelHandler wrapS2C(
+      Function<FriendlyByteBuf, MSG> decodeFunction) {
+    return new ClientHandler<>(decodeFunction);
+  }
 
-
-    public record ClientHandler<MSG extends S2CModPacket>(Function<FriendlyByteBuf, MSG> decodeFunction) implements ClientPlayNetworking.PlayChannelHandler {
-        @Override
-        public void receive(Minecraft client, ClientPacketListener handler, FriendlyByteBuf buf, PacketSender responseSender) {
-            MSG decode = decodeFunction.apply(buf);
-            client.execute(decode::handleClient);
-        }
+  public record ClientHandler<MSG extends S2CModPacket>(
+      Function<FriendlyByteBuf, MSG> decodeFunction)
+      implements ClientPlayNetworking.PlayChannelHandler {
+    @Override
+    public void receive(
+        Minecraft client,
+        ClientPacketListener handler,
+        FriendlyByteBuf buf,
+        PacketSender responseSender) {
+      MSG decode = decodeFunction.apply(buf);
+      client.execute(decode::handleClient);
     }
+  }
 }
