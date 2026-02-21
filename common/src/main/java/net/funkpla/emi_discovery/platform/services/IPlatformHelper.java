@@ -1,5 +1,6 @@
 package net.funkpla.emi_discovery.platform.services;
 
+import java.nio.file.Path;
 import java.util.function.Function;
 
 import net.funkpla.emi_discovery.network.client.S2CModPacket;
@@ -40,6 +41,8 @@ public interface IPlatformHelper {
 
         return isDevelopmentEnvironment() ? "development" : "production";
     }
+
+    Path getGameDir();
 
     <MSG extends S2CModPacket> void registerClientPacket(Class<MSG> packetLocation, Function<FriendlyByteBuf,MSG> reader);
     <MSG extends C2SModPacket> void registerServerPacket(Class<MSG> packetLocation, Function<FriendlyByteBuf,MSG> reader);

@@ -14,6 +14,7 @@ import net.funkpla.emi_discovery.platform.services.IPlatformHelper;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 
+import java.nio.file.Path;
 import java.util.function.Function;
 
 public class FabricPlatformHelper implements IPlatformHelper {
@@ -33,6 +34,11 @@ public class FabricPlatformHelper implements IPlatformHelper {
     public boolean isDevelopmentEnvironment() {
 
         return FabricLoader.getInstance().isDevelopmentEnvironment();
+    }
+
+    @Override
+    public Path getGameDir() {
+        return FabricLoader.getInstance().getGameDir();
     }
 
     @Override

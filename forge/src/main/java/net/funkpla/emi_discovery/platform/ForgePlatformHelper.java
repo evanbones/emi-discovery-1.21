@@ -1,5 +1,6 @@
 package net.funkpla.emi_discovery.platform;
 
+import java.nio.file.Path;
 import java.util.function.Function;
 import net.funkpla.emi_discovery.PacketHandlerForge;
 import net.funkpla.emi_discovery.network.client.S2CModPacket;
@@ -32,7 +33,12 @@ public class ForgePlatformHelper implements IPlatformHelper {
     return !FMLLoader.isProduction();
   }
 
-  @Override
+    @Override
+    public Path getGameDir() {
+        return FMLLoader.getGamePath();
+    }
+
+    @Override
   public <MSG extends S2CModPacket> void registerClientPacket(
       Class<MSG> packetLocation, Function<FriendlyByteBuf, MSG> reader) {
     PacketHandlerForge.INSTANCE.registerMessage(
