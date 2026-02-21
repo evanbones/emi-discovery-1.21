@@ -11,6 +11,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(EmiApi.class)
 public abstract class EmiApiMixin {
 
+  /**
+   * Cancel getting a stack if there are no recipes that can be crafted from known ingredients. This
+   * will prevent the tab for the category from being drawn.
+   */
   @Inject(
       remap = false,
       method = "displayRecipes(Ldev/emi/emi/api/stack/EmiIngredient;)V",
