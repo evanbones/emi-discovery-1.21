@@ -10,6 +10,7 @@ import dev.emi.emi.screen.RecipeScreen;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import net.funkpla.emi_discovery.KnownItems;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

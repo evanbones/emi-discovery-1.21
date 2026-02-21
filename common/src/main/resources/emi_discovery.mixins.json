@@ -8,13 +8,17 @@
         "MinecraftServerStorageSourceAccessor"
     ],
     "client": [
+        "emi.EmiApiMixin",
         "emi.EmiIngredientRecipeMixin",
         "emi.EmiScreenManagerMixin",
         "emi.EmiSidebarsMixin",
+        "emi.EmiSmithingTrimRecipeMixin",
+        "emi.IngredientTooltipComponentMixin",
         "emi.PageSlotWidgetMixin",
         "emi.RecipeScreenMixin",
         "emi.TagTooltipComponentMixin",
         "emi.accessor.EmiTagRecipeAccessor",
+        "emi.accessor.IngredientTooltipComponentAccessor",
         "emixx.EMIxxStackManagerAccessor",
         "emixx.EMIxxStackManagerMixin"
     ],

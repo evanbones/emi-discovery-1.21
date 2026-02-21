@@ -55,6 +55,14 @@ public class KnownItems {
     return ingredient.getEmiStacks().stream().anyMatch(KnownItems::isKnown);
   }
 
+  public static boolean areAllKnown(EmiIngredient ingredient) {
+    return ingredient.getEmiStacks().stream().allMatch(KnownItems::isKnown);
+  }
+
+  public static boolean areAllKnown(EmiRecipe recipe) {
+    return recipe.getInputs().stream().allMatch(KnownItems::isKnown);
+  }
+
   public static Set<Map.Entry<EmiRecipeCategory, List<EmiRecipe>>> filterRecipes(
       Map<EmiRecipeCategory, List<EmiRecipe>> categoryListMap) {
 

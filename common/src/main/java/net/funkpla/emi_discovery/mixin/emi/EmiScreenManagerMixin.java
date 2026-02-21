@@ -45,26 +45,6 @@ public class EmiScreenManagerMixin {
               target =
                   "Ldev/emi/emi/api/EmiApi;displayRecipes(Ldev/emi/emi/api/stack/EmiIngredient;)V"))
   private static void stopRecipeLookup(EmiIngredient fav, Operation<Void> original) {
-    if (!KnownItems.isKnown(fav)) original.call(fav);
+    if (KnownItems.areAllKnown(fav)) original.call(fav);
   }
-  /*
-   @WrapOperation(
-       method = "renderCurrentTooltip",
-       at = @At(value = "INVOKE", target = "Ljava/util/List;addAll(Ljava/util/Collection;)Z"))
-   private static boolean interceptAddTooltip(
-       List<ClientTooltipComponent> instance,
-       Collection<? extends ClientTooltipComponent> es,
-       Operation<Boolean> original,
-       @Local(name = "hov") EmiIngredient hov) {
-     var stacks = hov.getEmiStacks();
-     if (stacks.size() == 1
-         && !(stacks.get(0).getItemStack() == ItemStack.EMPTY)
-         && !KnownItems.isKnown(stacks.get(0).getItemStack())) {
-       instance.clear();
-       instance.add(
-           ClientTooltipComponent.create(FormattedCharSequence.forward("???", Style.EMPTY)));
-       return true;
-     } else return original.call(instance, es);
-   }
-  */
 }

@@ -21,7 +21,7 @@ public class EMIxxStackManagerMixin {
    * @return the filtered list
    */
   @Unique
-  private List<EmiStack> getFilteredStacks() {
+  private synchronized List<EmiStack> getFilteredStacks() {
     return ((EMIxxStackManagerAccessor) this)
         .getInternalDisplayedStacks().stream()
             .filter(
