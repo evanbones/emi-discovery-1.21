@@ -10,7 +10,6 @@ import dev.emi.emi.screen.RecipeScreen;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import net.funkpla.emi_discovery.KnownItems;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -28,7 +27,7 @@ public class RecipeScreenMixin {
   @WrapOperation(
       method = "init",
       at = @At(value = "INVOKE", target = "Ljava/util/Map;entrySet()Ljava/util/Set;"))
-  private Set<Map.Entry<EmiRecipeCategory, List<EmiRecipe>>> filterRecipes(
+  private synchronized Set<Map.Entry<EmiRecipeCategory, List<EmiRecipe>>> filterRecipes(
       Map<EmiRecipeCategory, List<EmiRecipe>> recipeCategoryListMap,
       Operation<Set<Map.Entry<EmiRecipeCategory, List<EmiRecipe>>>> original) {
     return KnownItems.filterRecipes(recipeCategoryListMap);

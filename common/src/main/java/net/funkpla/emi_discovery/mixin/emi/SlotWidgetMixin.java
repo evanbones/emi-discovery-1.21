@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.Mixin;
 @Mixin(SlotWidget.class)
 public class SlotWidgetMixin {
   /** Wrap the drawSlotHighlight method so that we can override it in subclasses. */
-  @WrapMethod(method = "drawSlotHighlight")
+  @WrapMethod(method = "drawSlotHighlight",remap=false)
   protected void overrideDrawSlotHighlight(
       GuiGraphics draw, Bounds bounds, Operation<Void> original) {
     original.call(draw, bounds);
