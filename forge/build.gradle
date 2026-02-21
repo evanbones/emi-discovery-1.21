@@ -53,6 +53,12 @@ repositories {
         name = "TerraformersMC"
         url = "https://maven.terraformersmc.com/"
     }
+    maven { url "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/" }
+    maven { url "https://thedarkcolour.github.io/KotlinForForge/" }
+    maven {
+        name = "Modrinth"
+        url = "https://api.modrinth.com/maven/"
+    }
 }
 
 dependencies {
@@ -62,7 +68,9 @@ dependencies {
     modApi("me.shedaniel.cloth:cloth-config-forge:${cloth_config_version}")
     implementation(jarJar("io.github.llamalad7:mixinextras-forge:0.5.3"))
     compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.5.3"))
-    implementation "dev.emi:emi-forge:${emi_version}"
+    modImplementation "dev.emi:emi-forge:${emi_version}"
+    implementation "thedarkcolour:kotlinforforge:${kotlin_for_forge_version}"
+    modImplementation "maven.modrinth:emi-plus-backport:98ocQQaS"
 }
 
 jar {

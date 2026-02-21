@@ -6,6 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 public class CommonClass {
 
   public static void init() {
+    Constants.LOG.info("EmiDiscovery is certainly not breaking things.");
     PacketHandler.registerPackets();
   }
 

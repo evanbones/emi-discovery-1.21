@@ -30,13 +30,15 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.LevelResource;
 import org.apache.commons.io.IOUtils;
 
 public class KnownItems {
   private static final Set<Item> knownItems = new HashSet<>();
   private static final File PRE_DISCOVERED =
       new File("config", "emi_discovery_pre_discovered.json");
-  private static final Path DATA_DIR = Path.of("moddata", "emi_discovery");
+  private static final Path DATA_DIR = Path.of(".","emi_discovery");
+
   private static final Gson gson = new Gson();
 
   public static void clear() {
@@ -87,8 +89,7 @@ public class KnownItems {
 
   public static void loadFromDisk() {
     clear();
-
-    if (!DATA_DIR.toFile().exists() && !DATA_DIR.toFile().mkdirs()) {
+    if (DATA_DIR.toFile().exists() && !DATA_DIR.toFile().mkdirs()) {
       throw new RuntimeException("Could not create data directory.");
     }
 
@@ -174,6 +175,17 @@ public class KnownItems {
     } finally {
       IOUtils.closeQuietly(writer);
     }
+  }
+
+  public static Path getDataDir() {
+    Minecraft client = Minecraft.getInstance();
+    if (client.isLocalServer() && client.getSingleplayerServer() != null) {
+      IntegratedServer server = client.getSingleplayerServer();
+      return server.getWorldPath(LevelResource.ROOT).normalize().toAbsolutePath().resolve(DATA_DIR);
+    } else if (client.getCurrentServer() != null) {
+      return DATA_DIR.resolve(client.getCurrentServer().name);
+    }
+    return DATA_DIR;
   }
 
   public static String getWorldName() {
