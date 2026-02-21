@@ -6,7 +6,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 
 public class EmiDiscoveryClientForge {
 
-  public static void init(IEventBus bus) {
+  public static void init(IEventBus ignoredBus) {
     MinecraftForge.EVENT_BUS.addListener(EmiDiscoveryClientForge::joinWorld);
     MinecraftForge.EVENT_BUS.addListener(EmiDiscoveryClientForge::leaveWorld);
   }
