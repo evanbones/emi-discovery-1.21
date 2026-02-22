@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import net.funkpla.emi_discovery.mixin.MinecraftServerStorageSourceAccessor;
 import net.funkpla.emi_discovery.platform.Services;
 import net.minecraft.client.Minecraft;
@@ -66,10 +67,9 @@ public class KnownItems {
     return recipe.getInputs().stream().allMatch(KnownItems::isKnown);
   }
 
-  public static Set<Map.Entry<EmiRecipeCategory, List<EmiRecipe>>> filterRecipes(
-      Map<EmiRecipeCategory, List<EmiRecipe>> categoryListMap) {
-
-    return categoryListMap.entrySet().stream()
+    public static Stream<Map.Entry<EmiRecipeCategory, List<EmiRecipe>>> filterEntrySet(
+      Set<Map.Entry<EmiRecipeCategory, List<EmiRecipe>>> entrySet) {
+    return entrySet.stream()
         .collect(
             Collectors.toMap(
                 Map.Entry::getKey,
@@ -79,7 +79,8 @@ public class KnownItems {
                             emiRecipe ->
                                 emiRecipe.getInputs().stream().allMatch(KnownItems::isKnown))
                         .toList()))
-        .entrySet();
+        .entrySet()
+        .stream();
   }
 
   public static void addKnown(ItemStack stack) {

@@ -5,9 +5,7 @@
     "refmap": "${mod_id}.refmap.json",
     "compatibilityLevel": "JAVA_17",
     "mixins": [
-        "MinecraftServerStorageSourceAccessor",
-        "emi.ItemEmiStackMixin",
-        "emi.SlotWidgetMixin"
+        "MinecraftServerStorageSourceAccessor"
     ],
     "client": [
         "emi.EmiApiMixin",
@@ -16,8 +14,10 @@
         "emi.EmiSidebarsMixin",
         "emi.EmiSmithingTrimRecipeMixin",
         "emi.IngredientTooltipComponentMixin",
+        "emi.ItemEmiStackMixin",
         "emi.PageSlotWidgetMixin",
         "emi.RecipeScreenMixin",
+        "emi.SlotWidgetMixin",
         "emi.TagTooltipComponentMixin",
         "emi.accessor.EmiTagRecipeAccessor",
         "emi.accessor.IngredientTooltipComponentAccessor",

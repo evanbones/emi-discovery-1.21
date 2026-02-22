@@ -40,6 +40,7 @@ public abstract class PageSlotWidgetMixin extends SlotWidgetMixin {
    * @return false if none of the items in the ingredient are known
    */
   @WrapOperation(
+      remap = false,
       method = "render",
       at = @At(value = "INVOKE", target = "Ldev/emi/emi/api/stack/EmiIngredient;isEmpty()Z"))
   private boolean filterPageSlots(EmiIngredient ingredient, Operation<Boolean> original) {
