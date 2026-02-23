@@ -53,15 +53,13 @@ public abstract class PageSlotWidgetMixin extends SlotWidgetMixin {
    * is not known
    */
   @Inject(
-      remap = false,
       method = "render",
       at =
           @At(
               value = "INVOKE",
               target =
                   "Ldev/emi/emi/api/widget/SlotWidget;render(Lnet/minecraft/client/gui/GuiGraphics;IIF)V",
-              shift = At.Shift.BY,
-              by = 1),
+              shift = At.Shift.AFTER),
       cancellable = true)
   private void drawBackgroundAnyway(
       GuiGraphics draw, int mouseX, int mouseY, float delta, CallbackInfo ci) {
