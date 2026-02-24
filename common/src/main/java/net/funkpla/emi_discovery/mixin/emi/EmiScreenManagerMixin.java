@@ -45,6 +45,6 @@ public class EmiScreenManagerMixin {
               target =
                   "Ldev/emi/emi/api/EmiApi;displayRecipes(Ldev/emi/emi/api/stack/EmiIngredient;)V"))
   private static void stopRecipeLookup(EmiIngredient fav, Operation<Void> original) {
-    if (KnownItems.areAllKnown(fav)) original.call(fav);
+    if (KnownItems.areAnyKnown(fav)) original.call(fav);
   }
 }

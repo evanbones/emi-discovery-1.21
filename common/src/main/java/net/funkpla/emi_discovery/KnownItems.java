@@ -6,10 +6,15 @@ import com.google.gson.JsonElement;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.mojang.authlib.GameProfile;
+import concerrox.emixx.content.stackgroup.EmiGroupStack;
+import concerrox.emixx.content.stackgroup.GroupedEmiStack;
+import dev.emi.emi.api.EmiApi;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
+import dev.emi.emi.api.stack.ItemEmiStack;
+import dev.emi.emi.registry.EmiRecipes;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -34,6 +39,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.apache.commons.io.IOUtils;
 
+@SuppressWarnings("UnstableApiUsage")
 public class KnownItems {
   private static final Set<Item> knownItems = new HashSet<>();
   private static final File PRE_DISCOVERED =
@@ -48,7 +54,7 @@ public class KnownItems {
   }
 
   public static boolean isKnown(ItemStack stack) {
-    return knownItems.contains(stack.getItem());
+    return stack == ItemStack.EMPTY || knownItems.contains(stack.getItem());
   }
 
   public static boolean isKnown(EmiStack stack) {
@@ -59,26 +65,62 @@ public class KnownItems {
     return ingredient.getEmiStacks().stream().anyMatch(KnownItems::isKnown);
   }
 
-  public static boolean areAllKnown(EmiIngredient ingredient) {
-    return ingredient.getEmiStacks().stream().allMatch(KnownItems::isKnown);
+  public static boolean areAnyKnown(EmiIngredient ingredient) {
+    return ingredient.getEmiStacks().stream().anyMatch(KnownItems::isKnownOrCraftable);
+  }
+
+  public static boolean isKnownOrCraftable(EmiStack emiStack) {
+    if (emiStack instanceof ItemEmiStack itemEmiStack)
+      return (isCraftable(itemEmiStack) || isKnown(itemEmiStack));
+    if (emiStack instanceof EmiGroupStack groupStack)
+      return (isCraftable(groupStack) || isKnown(groupStack));
+    if (emiStack instanceof GroupedEmiStack
+        && ((GroupedEmiStack<?>) emiStack).getRealStack() instanceof ItemEmiStack itemEmiStack) {
+      return (isCraftable(itemEmiStack) || isKnown(itemEmiStack));
+    }
+    return true;
+  }
+
+  public static boolean isCraftable(ItemEmiStack itemEmiStack) {
+    return EmiRecipes.manager.getRecipesByOutput(itemEmiStack).stream()
+        .filter(
+            recipe ->
+                (recipe.getCatalysts().isEmpty()
+                        || recipe.getCatalysts().stream().anyMatch(KnownItems::isKnown))
+                    && EmiApi.getRecipeManager().getWorkstations(recipe.getCategory()).stream()
+                        .anyMatch(KnownItems::isKnown))
+        .anyMatch(r -> r.getInputs().stream().allMatch(KnownItems::isKnown));
+  }
+
+  public static boolean isCraftable(EmiGroupStack groupStack) {
+    return groupStack.getItems().stream()
+        .anyMatch(
+            groupedStack ->
+                groupedStack.getRealStack() instanceof ItemEmiStack itemEmiStack
+                    && isCraftable(itemEmiStack));
+  }
+
+  public static boolean isKnown(EmiGroupStack groupStack) {
+    return groupStack.getItems().stream().anyMatch(KnownItems::areAnyKnown);
+  }
+
+  public static boolean shouldStackDisplay(EmiStack emiStack) {
+    return CommonClass.getConfigHolder().get().displayCraftableInIndex
+        ? isKnownOrCraftable(emiStack)
+        : isKnown(emiStack);
   }
 
   public static boolean areAllKnown(EmiRecipe recipe) {
     return recipe.getInputs().stream().allMatch(KnownItems::isKnown);
   }
 
-    public static Stream<Map.Entry<EmiRecipeCategory, List<EmiRecipe>>> filterEntrySet(
+  public static Stream<Map.Entry<EmiRecipeCategory, List<EmiRecipe>>> filterEntrySet(
       Set<Map.Entry<EmiRecipeCategory, List<EmiRecipe>>> entrySet) {
     return entrySet.stream()
         .collect(
             Collectors.toMap(
                 Map.Entry::getKey,
-                entry ->
-                    entry.getValue().stream()
-                        .filter(
-                            emiRecipe ->
-                                emiRecipe.getInputs().stream().allMatch(KnownItems::isKnown))
-                        .toList()))
+                entry -> entry.getValue().stream().filter(KnownItems::areAllKnown).toList()))
         .entrySet()
         .stream();
   }

@@ -16,6 +16,9 @@
     "entrypoints": {
         "main": [
             "net.funkpla.emi_discovery.EmiDiscoveryFabric"
+        ],
+        "modmenu": [
+            "net.funkpla.emi_discovery.ModMenuConfig"
         ]
     },
     "mixins": [

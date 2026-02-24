@@ -37,6 +37,7 @@ dependencies {
     modApi("me.shedaniel.cloth:cloth-config-forge:${cloth_config_version}") {
         exclude(group: "net.fabricmc.fabric-api")
     }
+    //modApi("com.terraformersmc:modmenu:${modmenu_version}")
     compileOnly("dev.emi:emi-forge:${emi_version}:api")
     modCompileOnly("dev.emi:emi-forge:${emi_version}") {
         exclude(group: "net.minecraftforge.fml")

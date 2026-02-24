@@ -1,7 +1,6 @@
 package net.funkpla.emi_discovery.mixin.emixx;
 
 import concerrox.emixx.content.StackManager;
-import concerrox.emixx.content.stackgroup.EmiGroupStack;
 import dev.emi.emi.api.stack.EmiStack;
 import java.util.List;
 import net.funkpla.emi_discovery.KnownItems;
@@ -23,15 +22,7 @@ public class EMIxxStackManagerMixin {
   @Unique
   private synchronized List<EmiStack> getFilteredStacks() {
     return ((EMIxxStackManagerAccessor) this)
-        .getInternalDisplayedStacks().stream()
-            .filter(
-                emiStack -> {
-                  if (emiStack instanceof EmiGroupStack groupStack)
-                    return groupStack.getItems().stream()
-                        .anyMatch(item -> KnownItems.isKnown(item.getRealStack()));
-                  return KnownItems.isKnown(emiStack);
-                })
-            .toList();
+        .getInternalDisplayedStacks().stream().filter(KnownItems::shouldStackDisplay).toList();
   }
 
   /**
