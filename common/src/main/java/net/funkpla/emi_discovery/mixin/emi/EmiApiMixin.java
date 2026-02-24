@@ -33,11 +33,12 @@ public abstract class EmiApiMixin {
         .noneMatch(KnownItems::areAllKnown)) ci.cancel();
   }
 
+  /** Filter out unknown recipes when building the recipe display. */
   @WrapOperation(
       remap = false,
       method = "setPages",
       at = @At(value = "INVOKE", target = "Ljava/util/Set;stream()Ljava/util/stream/Stream;"))
-  private static Stream<Map.Entry<EmiRecipeCategory, List<EmiRecipe>>> moosbutt(
+  private static Stream<Map.Entry<EmiRecipeCategory, List<EmiRecipe>>> filterRecipeMap(
       Set<Map.Entry<EmiRecipeCategory, List<EmiRecipe>>> instance,
       Operation<Stream<Map.Entry<EmiRecipeCategory, List<EmiRecipe>>>> original) {
     return KnownItems.filterEntrySet(instance);

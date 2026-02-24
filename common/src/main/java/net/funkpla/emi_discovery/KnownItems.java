@@ -22,10 +22,7 @@ import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import net.funkpla.emi_discovery.mixin.MinecraftServerStorageSourceAccessor;
@@ -49,49 +46,85 @@ public class KnownItems {
 
   private static final Gson gson = new Gson();
 
+  public static void addKnown(ItemStack stack) {
+    if (knownItems.add(stack.getItem())) {
+      saveToDisk();
+    }
+  }
+
   public static void clear() {
     knownItems.clear();
   }
 
+  /**
+   * Does the item represented by the given stack exist in the known set? Also returns true for
+   * empty stacks so empty slots in the recipe don't count.
+   *
+   * @param stack The stack to test.
+   */
   public static boolean isKnown(ItemStack stack) {
     return stack == ItemStack.EMPTY || knownItems.contains(stack.getItem());
   }
 
+  /** Convenience method to unwrap EmiStacks for the above. */
   public static boolean isKnown(EmiStack stack) {
     return isKnown(stack.getItemStack());
   }
 
+  /**
+   * For ingredients, if any stack matches, we call it a match. This gives the expected behavior for
+   * both single-item stacks and tag and list stacks.
+   */
   public static boolean isKnown(EmiIngredient ingredient) {
     return ingredient.getEmiStacks().stream().anyMatch(KnownItems::isKnown);
   }
 
+  /**
+   * This is the part where I get confused and angry about EMI++'s API naming. EmiGroupStacks
+   * *contain* GroupedEmiStacks, which are wrapped EmiStacks. Each EmiGroupStack also has an
+   * EmiStackGroup which represents metadata about the group. Yes. this is confusing.
+   *
+   * <p>This method takes an EmiGroupStack calls items() (which returns a list of GroupedEmiStacks),
+   * and returns true if any of the items associated with any of the GroupedEmiStacks are known.
+   */
+  public static boolean isKnown(EmiGroupStack groupStack) {
+    return groupStack.getItems().stream().anyMatch(KnownItems::areAnyKnown);
+  }
+
+  /** Returns true if any of the EmiStacks in the EmiIngredient are known. */
   public static boolean areAnyKnown(EmiIngredient ingredient) {
     return ingredient.getEmiStacks().stream().anyMatch(KnownItems::isKnownOrCraftable);
   }
 
+  /**
+   * This ugly beast returns true if the provided emiStack is known or craftable. The criteria
+   * differ slightly for different subclasses of EmiStack. Bleah.
+   */
   public static boolean isKnownOrCraftable(EmiStack emiStack) {
     if (emiStack instanceof ItemEmiStack itemEmiStack)
       return (isCraftable(itemEmiStack) || isKnown(itemEmiStack));
     if (emiStack instanceof EmiGroupStack groupStack)
       return (isCraftable(groupStack) || isKnown(groupStack));
-    if (emiStack instanceof GroupedEmiStack
-        && ((GroupedEmiStack<?>) emiStack).getRealStack() instanceof ItemEmiStack itemEmiStack) {
-      return (isCraftable(itemEmiStack) || isKnown(itemEmiStack));
-    }
+    if (emiStack instanceof GroupedEmiStack<?> groupedStack)
+      return (isKnownOrCraftable(groupedStack));
     return true;
   }
 
+  /**
+   * For ItemEmiStacks, we call the stack craftable if any recipe for the item has a known (or empty
+   * catalyst), has at least one known workstation, and can be made entirely with known items.
+   */
   public static boolean isCraftable(ItemEmiStack itemEmiStack) {
     return EmiRecipes.manager.getRecipesByOutput(itemEmiStack).stream()
         .filter(
             recipe ->
-                (recipe.getCatalysts().isEmpty()
-                        || recipe.getCatalysts().stream().anyMatch(KnownItems::isKnown))
+                (recipe.getCatalysts().isEmpty() || catalystsKnown(recipe))
                     && EmiApi.getRecipeManager().getWorkstations(recipe.getCategory()).stream()
                         .anyMatch(KnownItems::isKnown))
         .anyMatch(r -> r.getInputs().stream().allMatch(KnownItems::isKnown));
   }
 
+  /** For EmiGroupStacks, we call the stack craftable if any of the ItemEmiStacks are craftable. */
   public static boolean isCraftable(EmiGroupStack groupStack) {
     return groupStack.getItems().stream()
         .anyMatch(
@@ -100,35 +133,72 @@ public class KnownItems {
                     && isCraftable(itemEmiStack));
   }
 
-  public static boolean isKnown(EmiGroupStack groupStack) {
-    return groupStack.getItems().stream().anyMatch(KnownItems::areAnyKnown);
+  /** For GroupedEmiStacks, we unwrap the real stack and check it. */
+  public static boolean isKnownOrCraftable(GroupedEmiStack<?> groupedStack) {
+    return (groupedStack.getRealStack() instanceof ItemEmiStack itemEmiStack)
+        && (isCraftable(itemEmiStack) || isKnown(itemEmiStack));
   }
 
+  /**
+   * Switch between displaying only known stacks and known or craftable stacks based on the config
+   */
   public static boolean shouldStackDisplay(EmiStack emiStack) {
     return CommonClass.getConfigHolder().get().displayCraftableInIndex
         ? isKnownOrCraftable(emiStack)
         : isKnown(emiStack);
   }
 
-  public static boolean areAllKnown(EmiRecipe recipe) {
-    return recipe.getInputs().stream().allMatch(KnownItems::isKnown);
+  /**
+   * Returns true if at least one of the EmiRecipe's catalysts are known, or if there are no
+   * catalysts.
+   */
+  private static boolean catalystsKnown(EmiRecipe recipe) {
+    return (recipe.getCatalysts().isEmpty())
+        || recipe.getCatalysts().stream().anyMatch(KnownItems::isKnown);
   }
 
+  /**
+   * Returns true if all the inputs for the given EmiRecipe are known and at least one catalyst is
+   * known (or there are no catalysts).
+   */
+  public static boolean areAllKnown(EmiRecipe recipe) {
+    return recipe.getInputs().stream().allMatch(KnownItems::isKnown) && catalystsKnown(recipe);
+  }
+
+  /**
+   * Returns a list of EmiIngredients representing workstations associated with the given
+   * EmiRecipeCategory that are known.
+   */
+  public static List<EmiIngredient> workstationsFiltered(EmiRecipeCategory category) {
+    return EmiApi.getRecipeManager().getWorkstations(category).stream()
+        .filter(KnownItems::isKnown)
+        .toList();
+  }
+
+  /**
+   * Returns true if the EmiRecipeCategory has at least one known workstation, or has no associated
+   * workstations.
+   */
+  public static boolean workstationsKnown(EmiRecipeCategory category) {
+    return EmiApi.getRecipeManager().getWorkstations(category).isEmpty()
+        || workstationsFiltered(category).stream().anyMatch(KnownItems::isKnown);
+  }
+
+  /**
+   * This is used in EmiApiMixin to intercept the call that fetches the EntrySet stream of recipes
+   * to display from the global Map, and returns a stream filtered to remove recipes with unknown
+   * workstations or unknown ingredients.
+   */
   public static Stream<Map.Entry<EmiRecipeCategory, List<EmiRecipe>>> filterEntrySet(
       Set<Map.Entry<EmiRecipeCategory, List<EmiRecipe>>> entrySet) {
     return entrySet.stream()
+        .filter(entry -> workstationsKnown(entry.getKey()))
         .collect(
             Collectors.toMap(
                 Map.Entry::getKey,
                 entry -> entry.getValue().stream().filter(KnownItems::areAllKnown).toList()))
         .entrySet()
         .stream();
-  }
-
-  public static void addKnown(ItemStack stack) {
-    if (knownItems.add(stack.getItem())) {
-      saveToDisk();
-    }
   }
 
   public static void loadFromDisk() {

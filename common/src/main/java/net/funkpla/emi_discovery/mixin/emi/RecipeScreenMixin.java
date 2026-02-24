@@ -36,7 +36,22 @@ public abstract class RecipeScreenMixin {
       EmiRecipeCategory emiRecipeCategory,
       Operation<List<EmiIngredient>> original) {
 
-    List<EmiIngredient> workstations = recipeManager.getWorkstations(emiRecipeCategory);
-    return workstations.stream().filter(KnownItems::isKnown).toList();
+    return KnownItems.workstationsFiltered(emiRecipeCategory);
+  }
+
+  @WrapOperation(
+      remap = false,
+      method = "render",
+      at =
+          @At(
+              value = "INVOKE",
+              target =
+                  "Ldev/emi/emi/api/recipe/EmiRecipeManager;getWorkstations(Ldev/emi/emi/api/recipe/EmiRecipeCategory;)Ljava/util/List;"))
+  private List<EmiIngredient> schmelman(
+      EmiRecipeManager recipeManager,
+      EmiRecipeCategory emiRecipeCategory,
+      Operation<List<EmiIngredient>> original) {
+
+    return KnownItems.workstationsFiltered(emiRecipeCategory);
   }
 }
