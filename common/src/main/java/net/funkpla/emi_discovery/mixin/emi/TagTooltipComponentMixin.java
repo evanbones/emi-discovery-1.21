@@ -42,35 +42,4 @@ public class TagTooltipComponentMixin {
     if (KnownItems.shouldIngredientDisplay(emiIngredient)) original.call(drawContext, emiIngredient, x, y, flags);
     else drawContext.fill(x, y, 16, 16, 0x0FFFFFFF);
   }
-
-  /*
-  @Inject(
-      method = "Ldev/emi/emi/screen/tooltip/TagTooltipComponent;getStackWidth()I",
-      at = @At("HEAD"),
-      remap = false,
-      cancellable = true)
-  private void fup(CallbackInfoReturnable<Integer> cir) {
-    int result;
-    int count =
-        stacks.stream()
-            .filter(
-                stack -> {
-                  if (stack.getEmiStacks().size() == 1) {
-                    return KnownItems.isKnown(stack.getEmiStacks().get(0).getItemStack());
-                  }
-                  return false;
-                })
-            .toList()
-            .size();
-    if (count < 4) {
-      result = count;
-    } else if (count > 16) {
-      result = 8;
-    } else {
-      result = 4;
-    }
-    cir.setReturnValue(result);
-  }
-
-   */
 }
