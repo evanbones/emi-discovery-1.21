@@ -44,7 +44,7 @@ public abstract class PageSlotWidgetMixin extends SlotWidgetMixin {
       method = "render",
       at = @At(value = "INVOKE", target = "Ldev/emi/emi/api/stack/EmiIngredient;isEmpty()Z"))
   private boolean filterPageSlots(EmiIngredient ingredient, Operation<Boolean> original) {
-    drawIcon = KnownItems.isKnown(ingredient);
+    drawIcon = KnownItems.shouldIngredientDisplay(ingredient);
     return original.call(ingredient);
   }
 

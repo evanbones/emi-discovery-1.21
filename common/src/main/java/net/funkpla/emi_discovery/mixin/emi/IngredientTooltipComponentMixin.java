@@ -19,7 +19,7 @@ public class IngredientTooltipComponentMixin {
   @Unique
   private List<? extends EmiIngredient> filterIngredients(IngredientTooltipComponent component) {
     return ((IngredientTooltipComponentAccessor) component)
-        .getIngredients().stream().filter(KnownItems::isKnown).toList();
+        .getIngredients().stream().filter(KnownItems::shouldStackDisplay).toList();
   }
 
   @WrapOperation(

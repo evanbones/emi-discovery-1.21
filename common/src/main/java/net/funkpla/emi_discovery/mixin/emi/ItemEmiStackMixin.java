@@ -28,7 +28,7 @@ public class ItemEmiStackMixin {
       CallbackInfoReturnable<List<ClientTooltipComponent>> cir,
       @Local(name = "stack") ItemStack stack,
       @Local(name = "list") List<ClientTooltipComponent> list) {
-    if (!KnownItems.isKnown(stack)) {
+    if (!KnownItems.shouldStackDisplay(ItemEmiStack.of(stack))) {
       cir.setReturnValue(list);
     }
   }

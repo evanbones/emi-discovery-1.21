@@ -21,6 +21,6 @@ public class EmiSmithingTrimRecipeMixin {
               target = "Ldev/emi/emi/api/stack/EmiIngredient;getEmiStacks()Ljava/util/List;"))
   private List<EmiStack> filterUnknownTrimMaterials(
       EmiIngredient ingredient, Operation<List<EmiStack>> original) {
-    return ingredient.getEmiStacks().stream().filter(KnownItems::isKnown).toList();
+    return ingredient.getEmiStacks().stream().filter(KnownItems::shouldStackDisplay).toList();
   }
 }

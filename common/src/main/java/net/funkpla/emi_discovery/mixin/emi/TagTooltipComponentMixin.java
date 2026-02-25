@@ -16,7 +16,7 @@ public class TagTooltipComponentMixin {
    * Draw a translucent black square instead of an icon for unknown items in the tag recipe tooltip.
    *
    * @param drawContext the wrapped GuiGraphics instance
-   * @param stack the stack to draw
+   * @param emiIngredient the emiIngredient to draw
    * @param x duh
    * @param y double duh
    * @param flags flags for the original call
@@ -34,12 +34,12 @@ public class TagTooltipComponentMixin {
                       + "(Ldev/emi/emi/api/stack/EmiIngredient;III)V"))
   private void pruneTagTooltip(
       EmiDrawContext drawContext,
-      EmiIngredient stack,
+      EmiIngredient emiIngredient,
       int x,
       int y,
       int flags,
       Operation<Void> original) {
-    if (KnownItems.isKnown(stack)) original.call(drawContext, stack, x, y, flags);
+    if (KnownItems.shouldIngredientDisplay(emiIngredient)) original.call(drawContext, emiIngredient, x, y, flags);
     else drawContext.fill(x, y, 16, 16, 0x0FFFFFFF);
   }
 

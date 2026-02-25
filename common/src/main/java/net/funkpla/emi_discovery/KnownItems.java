@@ -148,6 +148,10 @@ public class KnownItems {
         : isKnown(emiStack);
   }
 
+    public static boolean shouldIngredientDisplay(EmiIngredient emiIngredient) {
+      return shouldStackDisplay(emiIngredient.getEmiStacks().get(0));
+    }
+
   /**
    * Returns true if at least one of the EmiRecipe's catalysts are known, or if there are no
    * catalysts.
