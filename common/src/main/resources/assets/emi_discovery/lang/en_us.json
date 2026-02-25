@@ -1,3 +1,6 @@
 {
-    "text.autoconfig.emi_discovery.option.displayCraftableInIndex": "Display craftable items in addition to known items in the index"
+    "text.autoconfig.emi_discovery.title": "EMIDiscovery",
+    "text.autoconfig.emi_discovery.option.displayCraftableInIndex": "Display craftable unknown items in the index?",
+    "text.autoconfig.emi_discovery.option.displayWithUnknownWorkstation": "Display recipes for undiscovered workstations?"
+
 }

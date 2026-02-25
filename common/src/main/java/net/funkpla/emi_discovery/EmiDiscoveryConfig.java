@@ -9,4 +9,6 @@ import me.shedaniel.autoconfig.annotation.ConfigEntry;
 public class EmiDiscoveryConfig implements ConfigData {
     @ConfigEntry.Category("main")
     public boolean displayCraftableInIndex = false;
+    @ConfigEntry.Category("main")
+    public boolean displayWithUnknownWorkstation = true;
 }

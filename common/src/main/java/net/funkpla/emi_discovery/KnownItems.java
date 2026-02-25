@@ -180,7 +180,8 @@ public class KnownItems {
    * workstations.
    */
   public static boolean workstationsKnown(EmiRecipeCategory category) {
-    return EmiApi.getRecipeManager().getWorkstations(category).isEmpty()
+    return CommonClass.getConfigHolder().get().displayWithUnknownWorkstation
+        || EmiApi.getRecipeManager().getWorkstations(category).isEmpty()
         || workstationsFiltered(category).stream().anyMatch(KnownItems::isKnown);
   }
 
