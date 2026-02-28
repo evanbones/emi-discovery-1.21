@@ -1,5 +1,8 @@
 package net.funkpla.emi_discovery;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -35,6 +38,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.apache.commons.io.IOUtils;
+import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("UnstableApiUsage")
 public class KnownItems {
@@ -46,8 +50,21 @@ public class KnownItems {
 
   private static final Gson gson = new Gson();
 
+  /** Cache expensive visibility calculations, invalidate on add. */
+  private static final LoadingCache<EmiStack, Boolean> stackDisplayCache =
+      CacheBuilder.newBuilder()
+          .maximumSize(5000)
+          .build(
+              new CacheLoader<>() {
+                @Override
+                public @NotNull Boolean load(@NotNull EmiStack stack) {
+                  return shouldStackDisplayUncached(stack);
+                }
+              });
+
   public static void addKnown(ItemStack stack) {
     if (knownItems.add(stack.getItem())) {
+      stackDisplayCache.invalidateAll();
       saveToDisk();
     }
   }
@@ -143,14 +160,18 @@ public class KnownItems {
    * Switch between displaying only known stacks and known or craftable stacks based on the config
    */
   public static boolean shouldStackDisplay(EmiStack emiStack) {
+    return stackDisplayCache.getUnchecked(emiStack);
+  }
+
+  public static boolean shouldStackDisplayUncached(EmiStack emiStack) {
     return CommonClass.getConfigHolder().get().displayCraftableInIndex
         ? isKnownOrCraftable(emiStack)
         : isKnown(emiStack);
   }
 
-    public static boolean shouldIngredientDisplay(EmiIngredient emiIngredient) {
-      return shouldStackDisplay(emiIngredient.getEmiStacks().get(0));
-    }
+  public static boolean shouldIngredientDisplay(EmiIngredient emiIngredient) {
+    return shouldStackDisplay(emiIngredient.getEmiStacks().get(0));
+  }
 
   /**
    * Returns true if at least one of the EmiRecipe's catalysts are known, or if there are no
