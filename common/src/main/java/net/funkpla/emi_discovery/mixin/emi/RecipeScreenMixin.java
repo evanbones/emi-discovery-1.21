@@ -40,14 +40,13 @@ public abstract class RecipeScreenMixin {
   }
 
   @WrapOperation(
-      remap = false,
       method = "render",
       at =
           @At(
               value = "INVOKE",
               target =
                   "Ldev/emi/emi/api/recipe/EmiRecipeManager;getWorkstations(Ldev/emi/emi/api/recipe/EmiRecipeCategory;)Ljava/util/List;"))
-  private List<EmiIngredient> schmelman(
+  private List<EmiIngredient> filterWorkstations(
       EmiRecipeManager recipeManager,
       EmiRecipeCategory emiRecipeCategory,
       Operation<List<EmiIngredient>> original) {
