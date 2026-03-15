@@ -161,12 +161,12 @@ public class KnownItems {
    * Switch between displaying only known stacks and known or craftable stacks based on the config
    */
   public static boolean shouldStackDisplay(EmiStack emiStack) {
-      try {
-          return stackDisplayCache.get(emiStack);
-      } catch (ExecutionException e) {
-          Constants.LOG.error("Unexpected error checking stack for display", e);
-          return false;
-      }
+    try {
+      return stackDisplayCache.get(emiStack);
+    } catch (ExecutionException | NullPointerException e) {
+      Constants.LOG.error("Unexpected error checking stack for display", e);
+      return false;
+    }
   }
 
   public static boolean shouldStackDisplayUncached(EmiStack emiStack) {
