@@ -26,6 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import net.funkpla.emi_discovery.mixin.MinecraftServerStorageSourceAccessor;
@@ -160,7 +161,12 @@ public class KnownItems {
    * Switch between displaying only known stacks and known or craftable stacks based on the config
    */
   public static boolean shouldStackDisplay(EmiStack emiStack) {
-    return stackDisplayCache.getUnchecked(emiStack);
+      try {
+          return stackDisplayCache.get(emiStack);
+      } catch (ExecutionException e) {
+          Constants.LOG.error("Unexpected error checking stack for display", e);
+          return false;
+      }
   }
 
   public static boolean shouldStackDisplayUncached(EmiStack emiStack) {
