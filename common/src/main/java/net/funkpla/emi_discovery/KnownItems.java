@@ -133,6 +133,7 @@ public class KnownItems {
    * catalyst), has at least one known workstation, and can be made entirely with known items.
    */
   public static boolean isCraftable(ItemEmiStack itemEmiStack) {
+      try {
     return EmiRecipes.manager.getRecipesByOutput(itemEmiStack).stream()
         .filter(
             recipe ->
@@ -140,6 +141,10 @@ public class KnownItems {
                     && EmiApi.getRecipeManager().getWorkstations(recipe.getCategory()).stream()
                         .anyMatch(KnownItems::isKnown))
         .anyMatch(r -> r.getInputs().stream().allMatch(KnownItems::isKnown));
+    } catch (NullPointerException e) {
+          Constants.LOG.error("Unexpected NPE in getInputs():",e);
+          return false;
+      }
   }
 
   /** For EmiGroupStacks, we call the stack craftable if any of the ItemEmiStacks are craftable. */
