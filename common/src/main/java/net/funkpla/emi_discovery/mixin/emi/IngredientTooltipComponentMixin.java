@@ -23,6 +23,7 @@ public class IngredientTooltipComponentMixin {
   }
 
   @WrapOperation(
+      remap = false,
       method = "getHeight",
       at =
           @At(
