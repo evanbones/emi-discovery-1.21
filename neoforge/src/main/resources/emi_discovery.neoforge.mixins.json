@@ -4,6 +4,7 @@
     "package": "net.funkpla.emi_discovery.mixin",
     "compatibilityLevel": "JAVA_21",
     "mixins": [
+        "InventoryChangeTriggerMixinForge"
     ],
     "client": [
     ],
