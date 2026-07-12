@@ -27,6 +27,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import net.funkpla.emi_discovery.mixin.MinecraftServerStorageSourceAccessor;
@@ -49,6 +50,12 @@ public class KnownItems {
   private static final Path DATA_PATH =
       Services.PLATFORM.getGameDir().resolve(Path.of("moddata", "emi_discovery"));
 
+  private static final AtomicInteger UPDATE_COUNT = new AtomicInteger();
+
+  public static int getUpdateCount(){
+      return UPDATE_COUNT.get();
+  }
+
   private static final Gson gson = new Gson();
 
   /** Cache expensive visibility calculations, invalidate on add. */
@@ -66,6 +73,7 @@ public class KnownItems {
   public static void addKnown(ItemStack stack) {
     if (knownItems.add(stack.getItem())) {
       stackDisplayCache.invalidateAll();
+      UPDATE_COUNT.getAndIncrement();
       saveToDisk();
     }
   }
