@@ -29,7 +29,9 @@
         "fabricloader": ">=0.14",
         "fabric": "*",
         "minecraft": "${minecraft_version}",
-        "java": ">=17"
+        "java": ">=17",
+        "emi": ">=1.1.22",
+        "emixx": ">=1.2.11"
     },
     "suggests": {
         "another-mod": "*"
