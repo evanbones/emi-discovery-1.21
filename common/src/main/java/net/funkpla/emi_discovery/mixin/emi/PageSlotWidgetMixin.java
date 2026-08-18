@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(targets = "dev.emi.emi.api.recipe.EmiIngredientRecipe$PageSlotWidget")
 public abstract class PageSlotWidgetMixin extends SlotWidgetMixin {
 
-  @Unique private boolean drawIcon = false;
+  @Unique private boolean emi_discovery$drawIcon = false;
 
   /**
    * Override the wrapper for SlotWidget.drawSlotHighlight() so we can skip it if the item isn't
@@ -44,7 +44,7 @@ public abstract class PageSlotWidgetMixin extends SlotWidgetMixin {
       method = "render",
       at = @At(value = "INVOKE", target = "Ldev/emi/emi/api/stack/EmiIngredient;isEmpty()Z"))
   private boolean filterPageSlots(EmiIngredient ingredient, Operation<Boolean> original) {
-    drawIcon = KnownItems.shouldIngredientDisplay(ingredient);
+    emi_discovery$drawIcon = KnownItems.shouldIngredientDisplay(ingredient);
     return original.call(ingredient);
   }
 
@@ -63,7 +63,7 @@ public abstract class PageSlotWidgetMixin extends SlotWidgetMixin {
       cancellable = true)
   private void drawBackgroundAnyway(
       GuiGraphics draw, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-    if (!drawIcon) {
+    if (!emi_discovery$drawIcon) {
       ((SlotWidget) (Object) this).drawBackground(draw, mouseX, mouseY, delta);
       ci.cancel();
     }

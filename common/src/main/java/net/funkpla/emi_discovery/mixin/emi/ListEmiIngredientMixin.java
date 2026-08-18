@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(ListEmiIngredient.class)
 public class ListEmiIngredientMixin {
   @Unique
-  private @NotNull List<? extends EmiIngredient> filterEmiIngredients(
+  private @NotNull List<? extends EmiIngredient> emi_discovery$filterEmiIngredients(
       ListEmiIngredient listEmiIngredient) {
     return listEmiIngredient.getIngredients().stream()
         .filter(KnownItems::shouldIngredientDisplay)
@@ -33,7 +33,7 @@ public class ListEmiIngredientMixin {
               opcode = Opcodes.GETFIELD))
   private List<? extends EmiIngredient> filterRenderedStacks(
       ListEmiIngredient listEmiIngredient, Operation<List<? extends EmiIngredient>> original) {
-    return filterEmiIngredients(listEmiIngredient);
+    return emi_discovery$filterEmiIngredients(listEmiIngredient);
   }
 
   @WrapOperation(
@@ -46,6 +46,6 @@ public class ListEmiIngredientMixin {
               opcode = Opcodes.GETFIELD))
   private List<? extends EmiIngredient> filterTooltipStacks(
       ListEmiIngredient listEmiIngredient, Operation<List<? extends EmiIngredient>> original) {
-    return filterEmiIngredients(listEmiIngredient);
+    return emi_discovery$filterEmiIngredients(listEmiIngredient);
   }
 }
