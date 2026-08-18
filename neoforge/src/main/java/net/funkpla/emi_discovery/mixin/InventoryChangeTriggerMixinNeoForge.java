@@ -17,9 +17,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(InventoryChangeTrigger.class)
-public class InventoryChangeTriggerMixinForge { // thank forge for using outdated mixin
+public class InventoryChangeTriggerMixinNeoForge {
 
-  @Unique private final WeakHashMap<ServerPlayer, Set<Item>> cache = new WeakHashMap<>();
+  @Unique private final WeakHashMap<ServerPlayer, Set<Item>> emi_discovery$cache = new WeakHashMap<>();
 
   @Inject(
       method =
@@ -27,10 +27,10 @@ public class InventoryChangeTriggerMixinForge { // thank forge for using outdate
       at = @At(value = "HEAD"))
   private void sendPacket(
       ServerPlayer pPlayer, Inventory pInventory, ItemStack pStack, CallbackInfo ci) {
-    cache.computeIfAbsent(pPlayer, player -> new HashSet<>());
-    if (!cache.get(pPlayer).contains(pStack.getItem())) {
+    emi_discovery$cache.computeIfAbsent(pPlayer, player -> new HashSet<>());
+    if (!emi_discovery$cache.get(pPlayer).contains(pStack.getItem())) {
       Services.PLATFORM.sendToClient(new S2CItemStackPacket(pStack), pPlayer);
-      cache.get(pPlayer).add(pStack.getItem());
+      emi_discovery$cache.get(pPlayer).add(pStack.getItem());
     }
   }
 }

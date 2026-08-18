@@ -13,9 +13,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MinecraftMixinFabric {
 
   @Inject(
-      method = "clearLevel(Lnet/minecraft/client/gui/screens/Screen;)V",
+      method = "disconnect(Lnet/minecraft/client/gui/screens/Screen;Z)V",
       at = @At(value = "INVOKE", target = "Lnet/minecraft/client/GameNarrator;clear()V"))
-  private void handleLogin(Screen screen, CallbackInfo ci) {
+  private void handleLogin(Screen screen, boolean keepResourcePacks, CallbackInfo ci) {
     EmiDiscoveryClient.leaveWorld();
   }
 }

@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientPacketListener.class)
 public class ClientPacketListenerMixinFabric {
-    @Inject(method = "handleLogin", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Options;broadcastOptions()V"))
+    @Inject(method = "handleLogin", at = @At("TAIL"))
     private void handleLogin(ClientboundLoginPacket packet, CallbackInfo ci) {
         EmiDiscoveryClient.joinWorld();
     }

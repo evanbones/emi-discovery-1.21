@@ -26,15 +26,12 @@
         "${mod_id}.fabric.mixins.json"
     ],
     "depends": {
-        "fabricloader": ">=0.14",
+        "fabricloader": ">=0.16",
         "fabric": "*",
         "minecraft": "${minecraft_version}",
-        "java": ">=17",
+        "java": ">=21",
         "emi": ">=1.1.22",
-        "emixx": ">=1.2.11"
-    },
-    "suggests": {
-        "another-mod": "*"
+        "remi": ">=4.5.2"
     }
 }
   

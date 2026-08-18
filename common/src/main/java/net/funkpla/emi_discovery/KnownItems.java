@@ -9,8 +9,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.mojang.authlib.GameProfile;
-import concerrox.emixx.content.stackgroup.EmiGroupStack;
-import concerrox.emixx.content.stackgroup.GroupedEmiStack;
+import com.evandev.remi.feature.stackgroup.EmiGroupStack;
+import com.evandev.remi.feature.stackgroup.GroupedEmiStack;
 import dev.emi.emi.api.EmiApi;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
@@ -94,6 +94,7 @@ public class KnownItems {
 
   /** Convenience method to unwrap EmiStacks for the above. */
   public static boolean isKnown(EmiStack stack) {
+    if (stack instanceof EmiGroupStack groupStack) return isKnown(groupStack);
     return isKnown(stack.getItemStack());
   }
 
@@ -114,7 +115,7 @@ public class KnownItems {
    * and returns true if any of the items associated with any of the GroupedEmiStacks are known.
    */
   public static boolean isKnown(EmiGroupStack groupStack) {
-    return groupStack.getItems().stream().anyMatch(KnownItems::areAnyKnown);
+    return groupStack.getItems().stream().anyMatch(KnownItems::isKnown);
   }
 
   /** Returns true if any of the EmiStacks in the EmiIngredient are known. */
@@ -160,13 +161,13 @@ public class KnownItems {
     return groupStack.getItems().stream()
         .anyMatch(
             groupedStack ->
-                groupedStack.getRealStack() instanceof ItemEmiStack itemEmiStack
+                groupedStack.realStack instanceof ItemEmiStack itemEmiStack
                     && isCraftable(itemEmiStack));
   }
 
   /** For GroupedEmiStacks, we unwrap the real stack and check it. */
   public static boolean isKnownOrCraftable(GroupedEmiStack<?> groupedStack) {
-    return (groupedStack.getRealStack() instanceof ItemEmiStack itemEmiStack)
+    return (groupedStack.realStack instanceof ItemEmiStack itemEmiStack)
         && (isCraftable(itemEmiStack) || isKnown(itemEmiStack));
   }
 
@@ -269,7 +270,7 @@ public class KnownItems {
         JsonArray json = gson.fromJson(jsonReader, JsonArray.class);
 
         for (JsonElement element : json) {
-          knownItems.add(BuiltInRegistries.ITEM.get(new ResourceLocation(element.getAsString())));
+          knownItems.add(BuiltInRegistries.ITEM.get(ResourceLocation.parse(element.getAsString())));
         }
 
       } catch (Exception e) {
