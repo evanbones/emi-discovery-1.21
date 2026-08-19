@@ -26,7 +26,9 @@ public class EmiScreenManagerMixin {
               target =
                   "Ldev/emi/emi/api/EmiApi;displayUses(Ldev/emi/emi/api/stack/EmiIngredient;)V"))
   private static void stopUseLookup(EmiIngredient fav, Operation<Void> original) {
-    if (KnownItems.isKnown(fav)) original.call(fav);
+    if (KnownItems.isKnown(fav) || KnownItems.allowUsageLookupForUndiscovered()) {
+      original.call(fav);
+    }
   }
 
   /**
@@ -45,6 +47,8 @@ public class EmiScreenManagerMixin {
               target =
                   "Ldev/emi/emi/api/EmiApi;displayRecipes(Ldev/emi/emi/api/stack/EmiIngredient;)V"))
   private static void stopRecipeLookup(EmiIngredient fav, Operation<Void> original) {
-    if (KnownItems.areAnyKnown(fav)) original.call(fav);
+    if (KnownItems.areAnyKnown(fav) || KnownItems.allowRecipeLookupForUndiscovered()) {
+      original.call(fav);
+    }
   }
 }

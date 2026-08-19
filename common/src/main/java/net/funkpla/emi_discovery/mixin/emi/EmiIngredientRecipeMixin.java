@@ -35,6 +35,9 @@ public class EmiIngredientRecipeMixin {
   private List<EmiIngredient> filterInputs(
       EmiIngredientRecipe ingredientRecipe, Operation<List<EmiIngredient>> original) {
     if (ingredientRecipe instanceof EmiTagRecipe tagRecipe) {
+      if (KnownItems.shouldBlackoutRecipes()) {
+        return original.call(ingredientRecipe);
+      }
 
       List<EmiIngredient> emiIngredients = new ArrayList<>();
       emiIngredients.add(new ListEmiIngredient(((EmiTagRecipeAccessor) tagRecipe).getStacks(), 1L));

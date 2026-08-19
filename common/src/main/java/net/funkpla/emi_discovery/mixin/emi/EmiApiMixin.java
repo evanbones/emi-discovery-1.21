@@ -29,8 +29,11 @@ public abstract class EmiApiMixin {
       at = @At(value = "INVOKE", target = "Ljava/util/List;get(I)Ljava/lang/Object;"),
       cancellable = true)
   private static void stopEmptyRecipeTabs(EmiIngredient stack, CallbackInfo ci) {
-    if (EmiApi.getRecipeManager().getRecipesByOutput(stack.getEmiStacks().getFirst()).stream()
-        .noneMatch(KnownItems::areAllKnown)) ci.cancel();
+    if (!KnownItems.shouldBlackoutRecipes()
+        && EmiApi.getRecipeManager().getRecipesByOutput(stack.getEmiStacks().getFirst()).stream()
+            .noneMatch(KnownItems::areAllKnown)) {
+      ci.cancel();
+    }
   }
 
   /** Filter out unknown recipes when building the recipe display. */
