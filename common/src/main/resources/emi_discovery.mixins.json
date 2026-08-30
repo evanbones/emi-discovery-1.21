@@ -5,10 +5,16 @@
     "refmap": "${mod_id}.refmap.json",
     "compatibilityLevel": "JAVA_18",
     "mixins": [
+        "BucketItemAccessor",
+        "BucketItemMixin",
+        "BottleItemMixin",
         "MinecraftServerStorageSourceAccessor"
     ],
     "client": [
         "ClientAdvancementsMixin",
+        "ClientPacketListenerMixin",
+        "LocalPlayerMixin",
+        "MultiPlayerGameModeMixin",
         "emi.EmiApiMixin",
         "emi.EmiIngredientRecipeMixin",
         "emi.EmiScreenManagerMixin",
@@ -25,6 +31,7 @@
         "emi.accessor.EmiTagRecipeAccessor",
         "emi.accessor.IngredientTooltipComponentAccessor",
         "emi.accessor.TagEmiIngredientAccessor",
+        "remi.EmiGroupStackMixin",
         "remi.StackManagerMixin"
     ],
     "server": [
