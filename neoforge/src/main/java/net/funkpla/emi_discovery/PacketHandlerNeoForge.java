@@ -1,6 +1,7 @@
 package net.funkpla.emi_discovery;
 
 import net.funkpla.emi_discovery.network.ModPacket;
+import net.funkpla.emi_discovery.network.ModPayload;
 import net.funkpla.emi_discovery.network.PacketHandler;
 import net.funkpla.emi_discovery.network.client.S2CModPacket;
 import net.funkpla.emi_discovery.network.server.C2SModPacket;
@@ -68,12 +69,5 @@ public class PacketHandlerNeoForge {
 
     public static void sendToServer(C2SModPacket msg) {
         PacketDistributor.sendToServer(new ModPayload<>(msg));
-    }
-
-    public record ModPayload<MSG extends ModPacket>(MSG msg) implements CustomPacketPayload {
-        @Override
-        public Type<? extends CustomPacketPayload> type() {
-            return new Type<>(PacketHandler.packet(msg.getClass()));
-        }
     }
 }
