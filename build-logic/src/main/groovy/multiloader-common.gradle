@@ -65,10 +65,6 @@ repositories {
         name = "TerraformersMC"
         url = "https://maven.terraformersmc.com/releases/"
     }
-    maven {
-        name = 'FuzssModResources'
-        url = 'https://raw.githubusercontent.com/Fuzss/modresources/main/maven/'
-    }
 }
 
 // Declare capabilities on the outgoing configurations.
