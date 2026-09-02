@@ -45,8 +45,6 @@ public abstract class EmiApiMixin {
   private static Stream<Map.Entry<EmiRecipeCategory, List<EmiRecipe>>> filterRecipeMap(
       Set<Map.Entry<EmiRecipeCategory, List<EmiRecipe>>> instance,
       Operation<Stream<Map.Entry<EmiRecipeCategory, List<EmiRecipe>>>> original) {
-      if (CommonClass.isDisabled())
-          return original.call(instance);
     return KnownItems.filterEntrySet(instance);
   }
 }

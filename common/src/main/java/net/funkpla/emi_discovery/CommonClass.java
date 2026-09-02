@@ -4,7 +4,6 @@ import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigHolder;
 import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
 import net.funkpla.emi_discovery.network.PacketHandler;
-import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionResult;
 
@@ -26,12 +25,7 @@ public class CommonClass {
     return configHolder;
   }
 
-  public static boolean isDisabled() {
-    return Minecraft.getInstance().player.getAbilities().instabuild
-        && !getConfigHolder().get().enableForCreativeMode;
-  }
-
-  public static ResourceLocation locate(String path) {
+    public static ResourceLocation locate(String path) {
     return ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, path);
   }
 }
