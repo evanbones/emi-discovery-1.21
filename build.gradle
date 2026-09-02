@@ -1,8 +1,8 @@
 import org.jetbrains.changelog.Changelog
 
 plugins {
-    id 'fabric-loom' version '1.15-SNAPSHOT' apply(false)
-    id 'net.neoforged.moddev' version '2.0.137' apply(false)
+    id 'net.fabricmc.fabric-loom-remap' version '1.16.3' apply false
+    id 'net.neoforged.moddev' version '2.0.137' apply false
     id 'org.jetbrains.changelog' version '2.2.1'
     id "me.modmuss50.mod-publish-plugin" version "2.2.0"
 }
@@ -29,7 +29,7 @@ publishMods {
         projectSlug = "nether-tweaks" // Required for discord webhook
         accessToken = providers.environmentVariable("CURSEFORGE_TOKEN")
         minecraftVersions.add(minecraft_version)
-        javaVersions.add(JavaVersion.VERSION_17)
+        javaVersions.add(JavaVersion.VERSION_21)
         clientRequired = true
         serverRequired = true
         requires("cloth-config")

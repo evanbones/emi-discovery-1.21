@@ -1,20 +1,14 @@
+import java.nio.charset.StandardCharsets
+
 plugins {
     id 'multiloader-loader'
     id 'fabric-loom'
 }
-repositories {
-    maven { url "https://maven.shedaniel.me/" }
-    maven { url "https://maven.terraformersmc.com/releases/" }
-    maven { url "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/" }
-    maven {
-        name = "Modrinth"
-        url = "https://api.modrinth.com/maven/"
-    }
-    maven {
-        name 'Xander Maven'
-        url 'https://maven.isxander.dev/releases'
-    }
+
+static String offlinePlayerUuid(String username) {
+    return UUID.nameUUIDFromBytes(("OfflinePlayer:" + username).getBytes(StandardCharsets.UTF_8)).toString()
 }
+
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
     mappings loom.layered {
@@ -30,9 +24,7 @@ dependencies {
     }
     modApi("com.terraformersmc:modmenu:${modmenu_version}")
     modImplementation "dev.emi:emi-fabric:${emi_version}"
-    modRuntimeOnly("dev.isxander:yet-another-config-lib:3.8.2+1.21.1-fabric")
     modImplementation "maven.modrinth:reliable-emi:${remi_version}-${minecraft_version}-fabric"
-    modImplementation "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:21.1.6"
 }
 
 loom {
@@ -46,14 +38,14 @@ loom {
             client()
             setConfigName("Fabric Client")
             ideConfigGenerated(true)
-            runDir("run")
-            programArgs(["--username", "murphy_slaw", "--uuid", "f0726398-654d-473c-af31-b0a210214fd4"])
+            runDir("runs/client")
+            programArgs(["--username", "murphy_slaw", "--uuid", offlinePlayerUuid("murphy_slaw")])
         }
         server {
             server()
             setConfigName("Fabric Server")
             ideConfigGenerated(true)
-            runDir("run")
+            runDir("runs/server")
         }
     }
 }

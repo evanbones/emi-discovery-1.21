@@ -38,26 +38,12 @@ neoForge {
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
-repositories {
-    maven { url "https://maven.shedaniel.me/" }
-    maven {
-        name = "TerraformersMC"
-        url = "https://maven.terraformersmc.com/"
-    }
-    maven { url "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/" }
-    maven {
-        name = "Modrinth"
-        url = "https://api.modrinth.com/maven/"
-    }
-}
-
 dependencies {
     compileOnly project(":common")
     implementation 'org.jetbrains:annotations:25.0.0'
     api("me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_version}")
     implementation "dev.emi:emi-neoforge:${emi_version}"
     implementation "maven.modrinth:reliable-emi:${remi_version}-${minecraft_version}-neoforge"
-    runtimeOnly "maven.modrinth:yacl:3.8.2+1.21.1-neoforge"
 }
 
 publishMods {
